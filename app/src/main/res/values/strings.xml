@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">HabiTracker</string>
     <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="habit">Habit</string>
+    <string name="habit_name">Habit Name</string>
+    <string name="habit_description">Habit Description</string>
+    <string name="habit_frequency">Habit Frequency</string>
+    <string name="reminder_time">Reminder Time:</string>
+    <string name="reminder_time_hint">hh:mm</string>
+    <string name="save_habit">Save Habit</string>
 </resources>
