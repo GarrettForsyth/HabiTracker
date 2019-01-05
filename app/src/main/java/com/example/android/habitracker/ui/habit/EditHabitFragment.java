@@ -5,17 +5,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.room.util.StringUtil;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.example.android.habitracker.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,9 +46,17 @@ public class EditHabitFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    private ConstraintLayout mActivityLayout;
+
     private Calendar mCalendar;
     private TimePickerDialog.OnTimeSetListener mTimeListener;
+
+    private EditText mHabitNameEditText;
+    private EditText mHabitDescriptionEditText;
+    private Spinner mHabitFrequencySpinner;
     private EditText mReminderTimeEditText;
+
+    private Button mSaveButton;
 
     public EditHabitFragment() {
         // Required empty public constructor
@@ -112,15 +125,13 @@ public class EditHabitFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_habit, container, false);
 
-        mReminderTimeEditText = view.findViewById(R.id.habit_reminder_time);
-        mReminderTimeEditText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showTimePicker(view);
-            }
-        });
+        mActivityLayout = view.findViewById(R.id.activity_constraint_layout);
 
-        Spinner spinner = (Spinner) view.findViewById(R.id.habit_frequency_spinner);
+        mHabitNameEditText = view.findViewById(R.id.habit_name);
+        mHabitDescriptionEditText = view.findViewById(R.id.habit_description);
+
+        // set up spinner
+        mHabitFrequencySpinner = (Spinner) view.findViewById(R.id.habit_frequency_spinner);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 getContext(),
@@ -129,9 +140,57 @@ public class EditHabitFragment extends Fragment {
         );
 
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        mHabitFrequencySpinner.setAdapter(adapter);
+
+        // set up time picker
+        mReminderTimeEditText = view.findViewById(R.id.habit_reminder_time);
+        mReminderTimeEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTimePicker(view);
+            }
+        });
+
+        // set up save button
+        mSaveButton = view.findViewById(R.id.save_habit_button);
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("testtag", "saveHabit: " + mReminderTimeEditText.getText().toString());
+                saveHabit();
+            }
+        });
 
         return view;
+    }
+
+    private void saveHabit(){
+        if(isBlank(mHabitNameEditText.getText().toString())) {
+            Snackbar.make(
+                    getActivity().findViewById(R.id.activity_constraint_layout),
+                    getString(R.string.invalid_habit_name),
+                    Snackbar.LENGTH_SHORT
+            ).show();
+        }
+        else if(isBlank(mHabitDescriptionEditText.getText().toString())) {
+            Snackbar.make(
+                    getActivity().findViewById(R.id.activity_constraint_layout),
+                    getString(R.string.invalid_habit_description),
+                    Snackbar.LENGTH_SHORT
+            ).show();
+        }
+        else if(isBlank(mReminderTimeEditText.getText().toString())) {
+            Snackbar.make(
+                    getActivity().findViewById(R.id.activity_constraint_layout),
+                    getString(R.string.invalid_habit_reminder_time),
+                    Snackbar.LENGTH_SHORT
+            ).show();
+        }
+    }
+
+    private boolean isBlank(String text) {
+        if (text == null) return true;
+        return text.trim().length() == 0;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

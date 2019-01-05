@@ -11,4 +11,7 @@
     <string name="reminder_time">Reminder Time:</string>
     <string name="reminder_time_hint">hh:mm</string>
     <string name="save_habit">Save Habit</string>
+    <string name="invalid_habit_name">Habit name cannot be blank.</string>
+    <string name="invalid_habit_description">Habit description cannot be blank.</string>
+    <string name="invalid_habit_reminder_time">Please pick a reminder time!</string>
 </resources>
