@@ -5,7 +5,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.example.android.habitracker.di.AppInjector;
-import com.example.android.habitracker.di.DaggerAppComponent;
+import com.example.android.habitracker.di.DaggerTestAppComponent;
 
 import javax.inject.Inject;
 
@@ -16,7 +16,7 @@ import dagger.android.HasActivityInjector;
 /**
  * This class is the injection root used by Dagger.
  */
-public class HabiTrackerApp extends Application implements HasActivityInjector {
+public class HabiTrackerTestApp extends Application implements HasActivityInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
@@ -28,9 +28,10 @@ public class HabiTrackerApp extends Application implements HasActivityInjector {
 
     @Override
     public void onCreate() {
-        Log.d("testtrace", "onCreate: production app ");
+        Log.d("testtrace", "onCreate: testapp ");
+
         super.onCreate();
-        DaggerAppComponent.builder()
+        DaggerTestAppComponent.builder()
                 .application(this)
                 .build()
                 .inject(this);

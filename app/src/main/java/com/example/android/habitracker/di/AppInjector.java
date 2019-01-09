@@ -3,6 +3,7 @@ package com.example.android.habitracker.di;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,17 +15,15 @@ import com.example.android.habitracker.application.HabiTrackerApp;
 
 import dagger.android.AndroidInjection;
 import dagger.android.support.AndroidSupportInjection;
+import dagger.android.support.HasSupportFragmentInjector;
 
 /**
  * Helper class to automatically inject activities and fragments.
  */
 public class AppInjector {
 
-    public static void init(HabiTrackerApp habiTrackerApp){
-        DaggerAppComponent.builder()
-                .application(habiTrackerApp)
-                .build()
-                .inject(habiTrackerApp);
+    public static void init(Application habiTrackerApp){
+        Log.d("testtrace", "init: ");
         habiTrackerApp
                 .registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
                     @Override
@@ -65,7 +64,9 @@ public class AppInjector {
     }
 
     private static void handleActivity(Activity activity) {
-        if (activity instanceof Injectable) {
+        Log.d("testtrace", "handleActivity: ");
+        if (activity instanceof HasSupportFragmentInjector) {
+            Log.d("testtrace", "handleActivity: activity has supportfragmentinjector");
             AndroidInjection.inject(activity);
         }
         if (activity instanceof FragmentActivity) {
@@ -75,6 +76,7 @@ public class AppInjector {
                         public void onFragmentCreated(@NonNull FragmentManager fm, @NonNull Fragment f, @Nullable Bundle savedInstanceState) {
                             super.onFragmentCreated(fm, f, savedInstanceState);
                             if( f instanceof Injectable) {
+                                Log.d("testtrace", "handleActivity: fragment is Injectable");
                                 AndroidSupportInjection.inject(f);
                             }
                         }

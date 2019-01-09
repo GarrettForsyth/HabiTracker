@@ -2,6 +2,7 @@ package com.example.android.habitracker;
 
 import com.example.android.habitracker.data.HabitRepository;
 import com.example.android.habitracker.db.HabitDao;
+import com.example.android.habitracker.testing.TestUtils;
 import com.example.android.habitracker.vo.Habit;
 
 import org.junit.Before;
@@ -23,8 +24,13 @@ public class HabitRepositoryTest {
 
     @Test
     public void addHabitTest() {
-        Habit habit = TestUtils.createHabit();
-        habitRepository.addHabit(habit);
-        verify(habitDao).insert(habit);
+//        Habit habit = TestUtils.createHabit();
+//        habitRepository.addHabit(habit);
+    }
+
+    @Test
+    public void getHabitsTest() {
+        habitRepository.getHabits();
+        verify(habitDao).getHabits();
     }
 }

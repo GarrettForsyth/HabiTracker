@@ -3,14 +3,17 @@ package com.example.android.habitracker.features;
 import android.widget.TimePicker;
 
 import androidx.test.espresso.contrib.PickerActions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
 import com.example.android.habitracker.MainActivity;
 import com.example.android.habitracker.R;
 
 import org.hamcrest.Matchers;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +21,12 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -42,8 +48,17 @@ public class AddHabitFeatureTest {
     @Rule
     public ActivityTestRule activityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    @BeforeClass
+    public static void beforeClass() {
+        InstrumentationRegistry.getInstrumentation()
+                .getTargetContext().deleteDatabase("test_habits.db");
+    }
+
     @Test
     public void userSuccessfullyAddsHabit() {
+
+        String habitName = "Water plants.";
+        String habitDescription = "Thirsty plants need water.";
 
         // click the add habit button
         onView(withId(R.id.fab)).perform(click());
@@ -52,9 +67,9 @@ public class AddHabitFeatureTest {
         onView(withText("Habit")).check(matches(isDisplayed()));
 
         // add habit attributes
-        onView(withId(R.id.habit_name)).perform(typeText("Walk dog"));
+        onView(withId(R.id.habit_name)).perform(typeText(habitName));
         closeSoftKeyboard();
-        onView(withId(R.id.habit_description)).perform(typeText("Take Bob around the block"));
+        onView(withId(R.id.habit_description)).perform(typeText(habitDescription));
         closeSoftKeyboard();
 
         onView(withId(R.id.habit_frequency_spinner)).perform(click());
@@ -69,8 +84,31 @@ public class AddHabitFeatureTest {
         // save habit
         onView(withId(R.id.save_habit_button)).perform(click());
 
-        //TODO
-        // The habit is shown in the habit collection
+        // return to the habits fragment
+        onView(withText("Habits")).check(matches(isDisplayed()));
+
+        // the new view is added to the bottom of the list
+        onView(withId(R.id.habits_recycler_view))
+                .perform(RecyclerViewActions.scrollToPosition(20));
+        onView(withText(habitName)).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void pressingBackReturnsToHabitsFragment() {
+        // click the add habit button
+        onView(withId(R.id.fab)).perform(click());
+
+        // check title of habit screen is displayed
+        onView(withText("Habit")).check(matches(isDisplayed()));
+
+        pressBack();
+
+        // check title of habit screen is displayed
+        onView(withText("Habits")).check(matches(isDisplayed()));
+
+
+
     }
 
     @Test
@@ -157,6 +195,7 @@ public class AddHabitFeatureTest {
         onData(anything()).atPosition(0).perform(click());
         onView(withId(R.id.habit_frequency_spinner)).check(matches(withSpinnerText("Daily")));
 
+        // REMINDER TIME NOT SET
 //        onView(withId(R.id.habit_reminder_time)).perform(click());
 //        onView(withClassName(Matchers.equalTo(TimePicker.class.getName())))
 //                .perform(PickerActions.setTime(7, 30));

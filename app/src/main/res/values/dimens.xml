@@ -4,4 +4,5 @@
     <dimen name="card_min_height">200dp</dimen>
     <dimen name="card_margin_top">200dp</dimen>
     <dimen name="title_offset">24dp</dimen>
+    <dimen name="card_vertical_margin">8dp</dimen>
 </resources>
